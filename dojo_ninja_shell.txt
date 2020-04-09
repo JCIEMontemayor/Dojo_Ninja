@@ -1,0 +1,136 @@
+Dojo & Ninjas (Shell) assignment
+
+(djangoPy3Env) Janelles-MacBook-Pro:dojo_ninja JCloud$ python manage.py makemigrations
+Migrations for 'dninja_app':
+  dninja_app/migrations/0001_initial.py
+    - Create model dojos
+    - Create model ninjas
+(djangoPy3Env) Janelles-MacBook-Pro:dojo_ninja JCloud$ python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, dninja_app, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying dninja_app.0001_initial... OK
+  Applying sessions.0001_initial... OK
+(djangoPy3Env) Janelles-MacBook-Pro:dojo_ninja JCloud$ python manage.py shell
+Python 3.7.6 (default, Dec 30 2019, 19:38:36) 
+[Clang 10.0.0 (clang-1000.11.45.5)] on darwin
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> from dninja_app.models import dojos, ninjas
+>>> 
+
+//Create 3 new dojos//
+>>> dojos.objects.create(name="Light Dojo", city="Seattle", state="Washington")
+<dojos: dojos object (1)>
+>>> dojos.objects.create(name="Dark Dojo", city="San Jose", state="California")
+<dojos: dojos object (2)>
+>>> dojos.objects.create(name="Red Dojo", city="Portland", state="Oregon")
+<dojos: dojos object (3)>
+>>> 
+
+//Delete the 3 dojos you just created//
+>>> dojo_to_delete = dojos.objects.get(id=1)
+>>> dojo_to_delete.delete()
+(1, {'dninja_app.dojos': 1})
+>>> dojo_to_delete = dojos.objects.get(id=2)
+>>> dojo_to_delete.delete()
+(1, {'dninja_app.dojos': 1})
+>>> dojo_to_delete = dojos.objects.get(id=3)
+>>> dojo_to_delete.delete()
+(1, {'dninja_app.dojos': 1})
+>>> 
+
+//Create 3 more dojos//
+>>> dojos.objects.create(name="Blue Dojo", city="Bremerton", state="Washington")
+<dojos: dojos object (4)>
+>>> dojos.objects.create(name="Green Dojo", city="LA", state="California")
+<dojos: dojos object (5)>
+>>> dojos.objects.create(name="Purple Dojo", city="NYC", state="New York")
+<dojos: dojos object (6)>
+>>> 
+
+//Create 3 ninjas that belong to the first dojo//
+>>> new_ninja = ninjas.objects.create(first_name="Cloud", last_name="Strife", dojo=dojos.objects.get(id=4))
+>>> new_ninja = ninjas.objects.create(first_name="Tifa", last_name="Lockhart", dojo=dojos.objects.get(id=4))
+>>> new_ninja = ninjas.objects.create(first_name="Barret", last_name="Wallace", dojo=dojos.objects.get(id=4))
+
+//Create 3 ninjas that belong to the second dojo//
+>>> new_ninja = ninjas.objects.create(first_name="Squall", last_name="Leonhart", dojo=dojos.objects.get(id=5))
+>>> new_ninja = ninjas.objects.create(first_name="Rinoa", last_name="Heartilly", dojo=dojos.objects.get(id=5))
+>>> new_ninja = ninjas.objects.create(first_name="Zell", last_name="Dincht", dojo=dojos.objects.get(id=5))
+
+//Create 3 ninjas that belong to the third dojo//
+>>> new_ninja = ninjas.objects.create(first_name="Zidane", last_name="Tribal", dojo=dojos.objects.get(id=6))
+>>> new_ninja = ninjas.objects.create(first_name="Garnet", last_name="Alexandros", dojo=dojos.objects.get(id=6))
+>>> new_ninja = ninjas.objects.create(first_name="Vivi", last_name="Ornitier", dojo=dojos.objects.get(id=6))
+
+//Retrieve all the ninjas from the first dojo//
+>>> this_dojo = dojos.objects.get(id=4)
+>>> this_dojo.ninjas.all()
+<QuerySet [<ninjas: ninjas object (1)>, <ninjas: ninjas object (2)>, <ninjas: ninjas object (3)>]>
+>>> for ninja in this_dojo.ninja.all():
+...     print(ninja.first_name)
+... 
+Cloud
+Tifa
+Barret
+
+//Retrieve all the ninjas from the last dojo//
+>>> this_dojo = dojos.objects.get(id=6)
+>>> this_dojo.ninja.all()
+<QuerySet [<ninjas: ninjas object (7)>, <ninjas: ninjas object (8)>, <ninjas: ninjas object (9)>]>
+>>> for ninja in this_dojo.ninja.all():
+...     print(ninja.first_name)
+... 
+Zidane
+Garnet
+Vivi
+
+//Retrieve the last ninja's dojo//
+>>> this_ninja = ninjas.objects.get(id=9)
+>>> this_ninja.dojo.name
+'Purple Dojo'
+
+//Create and run the migration files to update the table in your database. If needed, provide a default value of "old dojo"//
+(djangoPy3Env) Janelles-MacBook-Pro:dojo_ninja JCloud$ python manage.py makemigrations
+You are trying to add a non-nullable field 'desc' to dojos without a default; we can't do that (the database needs something to populate existing rows).
+Please select a fix:
+ 1) Provide a one-off default now (will be set on all existing rows with a null value for this column)
+ 2) Quit, and let me add a default in models.py
+Select an option: 1
+Please enter the default value now, as valid Python
+The datetime and django.utils.timezone modules are available, so you can do e.g. timezone.now
+Type 'exit' to exit this prompt
+>>> "old dojo"
+Migrations for 'dninja_app':
+  dninja_app/migrations/0002_dojos_desc.py
+    - Add field desc to dojos
+(djangoPy3Env) Janelles-MacBook-Pro:dojo_ninja JCloud$ python manage.py migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, dninja_app, sessions
+Running migrations:
+  Applying dninja_app.0002_dojos_desc... OK
+(djangoPy3Env) Janelles-MacBook-Pro:dojo_ninja JCloud$ 
+
+//Create a new dojo//
+>>> from dninja_app.models import dojos, ninjas
+>>> new_dojo = dojos.objects.create(name="Gold Dojo", city="San Francisco", state="California", desc="New Dojo")
+>>> 
+
+
